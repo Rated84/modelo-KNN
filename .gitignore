@@ -1,2 +1,4 @@
 #ignore 
-wine+quaçity.zip
+wine+quality.zip
+wine+quality/
+04_kNN.ipynb
