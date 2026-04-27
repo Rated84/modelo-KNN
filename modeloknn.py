@@ -33,12 +33,12 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size= 0.2 ,random_state=42, stratify=y
 )
 
-ks = [1, 3, 5, 7, 11]
+ks = [1, 3, 5, 7, 11,15,17,20,25]
 medias = []
-print("/n")
+
 for k in ks:
     knn = KNeighborsClassifier(n_neighbors=k)
-    scores = cross_val_score(knn, X_train, y_train, cv=5, scoring='accuracy')
+    scores = cross_val_score(knn, X_train, y_train, cv=9, scoring='accuracy')
     medias.append(scores.mean())
     print(f"k={k:2d} → acurácia média: {scores.mean():.4f} ± {scores.std():.4f}")
 
@@ -50,7 +50,8 @@ plt.title('Escolha do k — Validação Cruzada')
 plt.xticks(ks)
 plt.grid(True)
 plt.tight_layout()
-plt.show()
+plt.savefig("resultado.png", dpi=150, bbox_inches="tight")
+plt.close()
 
 # Melhor k
 melhor_k = ks[np.argmax(medias)]
