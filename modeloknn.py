@@ -33,32 +33,34 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size= 0.2 ,random_state=42, stratify=y
 )
 
-ks = [1, 3, 5, 7, 11,15,17,20,25]
+print(pd.Series(y).value_counts().sort_index())
+
+
+ks = list(range(1,50))
 medias = []
 
 for k in ks:
     knn = KNeighborsClassifier(n_neighbors=k)
-    scores = cross_val_score(knn, X_train, y_train, cv=9, scoring='accuracy')
+    scores = cross_val_score(knn, X_train, y_train, cv=5, scoring='accuracy')
     medias.append(scores.mean())
     print(f"k={k:2d} → acurácia média: {scores.mean():.4f} ± {scores.std():.4f}")
 
-# Plot acurácia x k
+# gráfico 
 plt.plot(ks, medias, marker='o')
 plt.xlabel('k')
 plt.ylabel('Acurácia média (5-fold CV)')
 plt.title('Escolha do k — Validação Cruzada')
-plt.xticks(ks)
+plt.xticks(ks[::2])
 plt.grid(True)
 plt.tight_layout()
-plt.savefig("resultado.png", dpi=150, bbox_inches="tight")
+plt.savefig("resultado.png", dpi=200, bbox_inches="tight")
 plt.close()
 
-# Melhor k
-melhor_k = ks[np.argmax(medias)]
-print(f"\nMelhor k: {melhor_k}")
 
-# Treinar com melhor k e avaliar no teste
-modelo_final = KNeighborsClassifier(n_neighbors=melhor_k)
+best_k = ks[np.argmax(medias)]
+print(f"\nMelhor k: {best_k}")
+
+modelo_final = KNeighborsClassifier(n_neighbors=best_k)
 modelo_final.fit(X_train, y_train)
 
 y_prev = modelo_final.predict(X_test)
@@ -67,4 +69,5 @@ print("\nMatriz de Confusão:")
 print(confusion_matrix(y_test, y_prev))
 
 print("\nRelatório de Classificação:")
-print(classification_report(y_test, y_prev, target_names=['bom', 'medio', 'ruim']))
+print(classification_report(y_test, y_prev,zero_division = 0, target_names=['bom', 'medio', 'ruim']))
+
